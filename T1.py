@@ -1,7 +1,10 @@
 #pip install matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-pulsos= [1,0,1,0,1,0,1,1]
+#pulsos= [1,0,1,0,1,0,1,1,1,0,1,0,1,1,1,1,1,1,0,1,0,1,0]
+pulsos= []
+print("Digitatu cadena de 0 y 1\n")
+pulsos=[int(digito) for digito in input()]
 fig, axs = plt.subplots(3, 1, figsize=(12, 8))
 #******************************* NRZ-L ***********************************
 j=0
