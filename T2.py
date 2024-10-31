@@ -22,34 +22,33 @@ def polinomio_a_binario_y_grado(polinomio):
     
     return binario, grado
 
-# Ejemplo de uso
-polinomio = "x^4+x^2+1"
-binario, grado = polinomio_a_binario_y_grado(polinomio)
+def crc_calculo(mensaje, polinomio):
+    # Convierte el polinomio a binario y obtén su grado
+    polinomio_binario, grado = polinomio_a_binario_y_grado(polinomio)
+    
+    # Agregar ceros al final del mensaje según el grado del polinomio
+    mensaje += '0' * grado
+    
+    # Convertir a listas de enteros para manipulación
+    mensaje = [int(bit) for bit in mensaje]
+    polinomio = [int(bit) for bit in polinomio_binario]
 
-print(f"Cadena binaria: {binario}")
-print(f"Grado del polinomio: {grado}")
-def crc_remainder(input_bits, polynomial):
-    # Agregar ceros al final de la entrada
-    input_bits = input_bits + '0' * (len(polynomial) - 1)
+    # Realizar la división binaria (XOR)
+    for i in range(len(mensaje) - grado):
+        if mensaje[i] == 1:  # Solo dividir si el bit actual es 1
+            for j in range(len(polinomio)):
+                mensaje[i + j] ^= polinomio[j]
     
-    # Realizar la división
-    input_length = len(input_bits)
-    polynomial_length = len(polynomial)
-    
-    # Convertir cadenas a listas de enteros
-    input_bits = [int(bit) for bit in input_bits]
-    polynomial = [int(bit) for bit in polynomial]
-    
-    for i in range(input_length - polynomial_length + 1):
-        if input_bits[i] == 1:  # Solo dividir si el primer bit es 1
-            for j in range(polynomial_length):
-                input_bits[i + j] ^= polynomial[j]  # XOR
-    
-    # El residuo es lo que queda
-    return ''.join(str(bit) for bit in input_bits[-(polynomial_length - 1):])
+    # El residuo es el CRC
+    crc = ''.join(str(bit) for bit in mensaje[-grado:])
+    return crc
 
 # Ejemplo de uso
-data = "1101"  # Datos originales
-polynomial = "1011"  # Polinomio generador
-crc = crc_remainder(data, polynomial)
-print(f"CRC: {crc}")
+mensaje = "11010011101100"  # Datos de ejemplo
+polinomio = "x^4 + x + 1"   # Polinomio de ejemplo para CRC
+
+# Calcula el CRC
+crc = crc_calculo(mensaje, polinomio)
+print(f"Mensaje original: {mensaje}")
+print(f"CRC calculado: {crc}")
+print(f"Mensaje con CRC: {mensaje + crc}")
